@@ -1,54 +1,21 @@
-# LatestAiDevelopment Crew
+# AI Project Reviewer
+AI Project Reviewer is an automated peer-review system developed using Crew AI. This project is designed to facilitate the review process of scientific publications by simulating two distinct roles: Reviewer and Editor. Each role performs specific tasks on an input scientific text, generating a thorough and accurate review as well as detailed editing feedback. The system is particularly aimed at enhancing the peer-review process for complex, biophysics-focused research articles.
 
-Welcome to the LatestAiDevelopment Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+## Key files
+`config/agents.yaml`: Defines the characteristics and goals for each agent in the review process.
 
-## Installation
+* Reviewer: Acts as a Senior Biophysics Research Scientist who critically evaluates the scientific merit and accuracy of the text.
+* Editor: Functions as a Scientific Publication Editor, identifying typos, grammatical errors, and semantic inconsistencies.
+`config/tasks.yaml`: Outlines the tasks that each agent will perform.
 
-Ensure you have Python >=3.10 <=3.13 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+* Review Task: Conducts a thorough review to identify major concerns and provide expert insight.
+* Editing Task: Checks for clerical mistakes, grammatical errors, and logical inconsistencies.
 
-First, if you haven't already, install uv:
+`text.dat`: Contains the input text of a scientific article to be reviewed and edited by the agents.
 
-```bash
-pip install uv
-```
+## Outputs
+`reviewer_report.md`: The Reviewer’s output, containing a summary of the article, major concerns, and minor comments.
+`editor_report.md`: The Editor’s output, listing detailed points on typos, grammatical issues, and logical inconsistencies.
 
-Next, navigate to your project directory and install the dependencies:
-
-(Optional) Lock the dependencies and install them by using the CLI command:
-```bash
-crewai install
-```
-### Customizing
-
-**Add your `OPENAI_API_KEY` into the `.env` file**
-
-- Modify `src/latest_ai_development/config/agents.yaml` to define your agents
-- Modify `src/latest_ai_development/config/tasks.yaml` to define your tasks
-- Modify `src/latest_ai_development/crew.py` to add your own logic, tools and specific args
-- Modify `src/latest_ai_development/main.py` to add custom inputs for your agents and tasks
-
-## Running the Project
-
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
-
-```bash
-$ crewai run
-```
-
-This command initializes the latest-ai-development Crew, assembling the agents and assigning them tasks as defined in your configuration.
-
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
-
-## Understanding Your Crew
-
-The latest-ai-development Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
-
-## Support
-
-For support, questions, or feedback regarding the LatestAiDevelopment Crew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
-
-Let's create wonders together with the power and simplicity of crewAI.
+## Example Reports
+In `reviewer_report.md` and `editor_report.md`, you will find example reports based on a biophysics publication discussing protein folding dynamics. Each report offers an overview of the article’s strengths, weaknesses, and areas for improvement, showcasing the Reviewer’s and Editor’s unique expertise.
