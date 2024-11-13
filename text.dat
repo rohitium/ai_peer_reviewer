@@ -1,0 +1,932 @@
+1
+Transition path times reveal memory effects and anomalous diffusion in
+the dynamics of protein folding
+Rohit Satija, Atanu Das, and Dmitrii E Makarova
+Department of Chemistry and Institute for Computational Engineering and Sciences,
+University of Texas at Austin, Austin, Texas 78712
+Abstract
+Recent single-molecule experiments probed transition paths of biomolecular folding and,
+in particular, measured the times biomolecules spend while crossing their free energy
+barriers. A surprising finding from these studies is that the transition barriers crossed by
+transition paths, as inferred from experimentally observed transition path times, are often
+lower than the independently determined free energy barriers. Here we explore memory
+effects leading to anomalous diffusion as a possible origin of this discrepancy. Our
+analysis of several molecular dynamics trajectories shows that the dynamics of common
+reaction coordinates used to describe protein folding is subdiffusive. We capture this
+effect using a one-dimensional fractional Brownian motion (FBM) model, in which the
+system undergoes a subdiffusive process in the presence of a potential of mean force, and
+show that this model yields much broader distributions of transition path times with
+stretched exponential long-time tails. Without any adjustable parameters, these
+distributions agree well with the transition path times computed directly from protein
+trajectories. We further discuss how the FBM model can be tested experimentally.
+a) Email: makarov@cm.utexas.edu
+2
+I. INTRODUCTION
+Kinetics of protein folding and of other conformational transitions in biomolecules is
+commonly rationalized in terms of simple, one-dimensional diffusion along a suitable
+reaction coordinate1-7 (Fig. 1). That is, one assumes that the motion along a reaction
+coordinate x is governed by the overdamped Langevin equation
+kBT
+D
+x! = −V′(x)+ f (t ) . (1)
+Here D is a diffusion coefficient, V(x) is the potential of mean force (PMF), which is
+related to the equilibrium distribution of x, peq (x) , via the equation
+V(x) = −kBT ln peq (x) , (2)
+and f (t ) is a delta-correlated Gaussian noise, whose strength is related to the temperature
+T and the diffusion coefficient via the fluctuation-dissipation theorem. Under this
+assumption, the rate coefficient of the transition, say, from A to B in Fig. 1, is readily
+expressed in terms of the barrier height, ΔV , using the Kramers formula8
+kA→B =
+D V′′ A V′′ TS
+2π kBT
+e
+− ΔV
+kBT . (3)
+Here, V′′ A and V′′ TS are the curvatures of the PMF at its minimum corresponding to state A
+and at its maximum viewed as the transition state (TS).
+3
+FIG. 1. A common description of biomolecular transitions (between A and B here) is that
+of diffusive dynamics along a reaction coordinate x in the potential of mean force V(x) .
+Here we focus on the temporal duration of transition paths (shown in red), which are the
+continuous pieces of the molecular trajectory where the system enters the transition
+region, defined as xA < x < xB , from A(B) and exits to B(A).
+Yet direct computational examination of most reaction coordinates used in calculations
+(i.e. those that measure a protein’s degree of nativeness) or in experiments (i.e.
+interatomic distances that determine experimental signals) rarely yields simple diffusive
+V(x)
+x
+time
+xA xB
+A B
+TS
+4
+dynamics. Indeed, the mean square distance traveled along a reaction coordinate x in a
+time t, defined as
+Δx2 (t ) =
+dτ [x(τ )− x(τ + t )]2 ∫
+∫ dτ
+, (4)
+often grows slower with the time t than a directly proportional dependence expected for
+diffusion. Several examples are given in Fig. 2, where x is chosen to be the end-to-end
+distance of a 11-residue-long Gly-Ser repeat peptide9, the end-to-end distance of an
+unfolded cold-shock protein (CSP)10, and the root-mean-square departure (RMSD) from
+the native structure for a designed double norleucine mutant of 35-residue villin
+headpiece C-terminal fragment (HP-35) protein11. More examples of this behavior can be
+found in work by others12-14 and in our study of the dynamics of unfolded peptides9.
+5
+FIG. 2. The mean-square displacement of the end-to-end distance of a 11-residue Gly-
+Ser repeat peptide, the end-to-end distance of an unfolded cold-shock protein (CSP), and
+the RMSD from the native structure of a HP-35 protein plotted as a function of time.
+These quantities grow with time slower than linearly (the slope corresponding to linear
+growth is shown as a dashed line).
+In all of these cases, at times that are short enough that the energetic and entropic
+constraints on the chain dynamics can be neglected (see Appendix A), the dynamics of
+the coordinate under consideration appears to be subdiffusive, following a power
+dependence of the form
+6
+Δx2 (t ) = 2Ktα (5)
+where K will be called a generalized diffusion coefficient, and where the exponent α
+typically ranges from 0.4 to 0.7. Other evidence of subdiffusive dynamics in proteins,
+both experimental12, 15, 16 and computational12-14 has also been reported in the literature.
+The subdiffusive behavior is commonly an indication of a spectrum of timescales
+affecting x, or, equivalently, of the failure of Markov, memoryless approximation to
+describe protein dynamics. Special reaction coordinates may exist that behave in a
+Markovian way14, 17-22, in principle, but they are usually inaccessible to an
+experimentalist.
+The consequences of non-Markov effects on the kinetics of protein folding depend on the
+timescale in question. The mean time it takes, e.g., a protein to fold or unfold (which is
+the inverse of the transition rate; cf. Eq. (3)) is usually the slowest timescale of interest in
+a study of protein folding. If it is longer than all other dynamic timescales, then it is
+possible to introduce an apparent diffusion coefficient D that adequately describes the
+folding and unfolding rates through the Kramers equation, Eq. (3), regardless of whether
+or not the actual dynamics is diffusive23. Recent single-molecule studies, however,
+highlighted the importance of faster timescales such as the temporal length of a transition
+path24-31 and the reconfiguration time within the unfolded basin32-36. In this paper we will
+mostly focus on the first of the two.
+7
+The folding transition path time (also referred to as the direct transit time or simply
+transit time) is the time a protein spends in direct transit from the unfolded to the folded
+conformational basin, as illustrated in Fig. 1 (of course, this notion can be extended to
+any conformational rearrangement, not just folding). Under the assumption of diffusive
+dynamics, Eq. (1), the dependence of transit times on the diffusion coefficient and the
+shape of the PMF is well understood. In particular, the transit time distribution, ptr (t ) , is
+asymmetric, showing a sharp rise at short times and an exponential long-time tail37, 38.
+For a parabolic barrier, one further finds ptr (t ) ∝ e
+−
+VT′′S Dt
+kBT at long times, while the mean
+transit time has a logarithmic barrier height dependence39, 40, ttr ∝ kBT
+V′′ TS D
+ln
+ΔV
+kBT
+.
+Although early experiments suggested semi-quantitative agreement between this
+theoretical prediction of mean transit times and measurements25, later studies, having
+measured distributions of transit times, revealed a surprise: although these distributions
+could be fit with a one-dimensional model of diffusion in a parabolic barrier37, 38, the
+predicted barrier height was much lower than the one directly measured from potentials
+of mean force or inferred from the transition rates27. A similar observation was made
+earlier by our group41 on the basis of simulations of a model polymeric system; likewise,
+a recent analysis42 of a long molecular dynamics trajectory of a protein undergoing
+folding and unfolding transitions11 showed that these transitions would have to be
+barrierless in order to explain the observed distributions of transition-path times, despite a
+considerable free energy barrier present along the reaction coordinate.
+8
+In Fig. 3(a) we show the distribution ptr (t ) of transition-path times of a designed HP-35
+protein; this distribution was obtained by analyzing a long trajectory x(t ) , where x is the
+RMSD of the protein from its native structure (see ref.11; the transition region was
+defined precisely as in that study). The potential of mean force (Eq. (2)) obtained from
+the equilibrium probability distribution peq (x) of the reaction coordinate x, shows a
+distinct barrier (Fig. 3(b)). Assuming one-dimensional diffusion in this potential, we can
+estimate the diffusion coefficient D by demanding that the mean transit time
+ttr = tptr (t )dt
+0
+∞∫
+matches the corresponding time from the simulated trajectory (a
+numerical method of obtaining ptr (t ) for a one-dimensional diffusion model is described
+in ref.37). The result, shown in Fig. 3(a) as a red line, is a distribution that is accurate
+neither at short nor at long times. Specifically, it underestimates the probability of very
+fast transition events while entirely missing the slow ones: contrary to the simulation
+data, observation of long transition paths of a duration longer than ~100 ns has negligible
+probability according to the one-dimensional diffusion model. As previously reported42, a
+better fit of the distribution can be obtained using the one-dimensional diffusion model,
+but only if the incorrect (specifically, much lower) free energy barrier is assumed.
+9
+FIG. 3. (a): The probability distribution of transition path times for a designed HP-35
+protein. The RMSD from the native structure was used as the reaction coordinate x, and
+the transition region is defined as 1.3Å < x < 6Å (as in ref.11). The red line shows the
+10
+prediction of the one-dimensional diffusion model with the potential of mean force
+shown in Fig. 3(b) and with a diffusion coefficient D adjusted to yield the correct mean
+transition path time. The inset shows the same data on a logarithmic scale to highlight the
+behavior of the distribution tails. (b): The potential of mean force for the reaction
+coordinate of Fig. 3(a).
+Possible explanations of the low apparent barriers traversed by transition paths include
+energy landscape roughness43, multidimensional effects44, or structural heterogeneity42,
+but a key question remains unanswered: If the view of one dimensional diffusion along x
+fails, is there a one-dimensional model that works or should a simple, low-dimensional
+description be abandoned altogether?
+A useful low-dimensional model should reproduce both the equilibrium properties of a
+protein and its dynamics. In what follows we will explore the utility of one candidate for
+such a simple, analytically tractable one-dimensional description of transition-path
+dynamics, the fractional Brownian motion (FBM) model. While agreeing with
+simulations of protein dynamics, this model further makes several experimentally
+verifiable predictions that, we hope, will provide its definitive test in the future.
+II. FRACTIONAL BROWNIAN MOTION (FBM) MODEL
+For the simple diffusion model, the stochastic dynamics of a reaction coordinate x can be
+described by an overdamped Langevin equation45, Eq. (1). Equivalently, the time
+11
+evolution of the probability density of x, p(x,t ) , is described by the Smoluchowski
+equation:
+∂ p(x,t )
+∂t
+= D
+∂
+∂x
+(βV′(x)+ ∂
+∂x
+)p(x,t ) (6)
+where D is a diffusion coefficient, V(x) is a potential of mean force, and β = kB( T )−1 , T
+being the absolute temperature. Unfortunately, there is no unique generalization of Eq.
+(6) that accounts for subdiffusive behavior, and several physically distinct models exist46,
+47. One popular choice is the so-called fractional Fokker-Planck equation47, but it predicts
+non-ergodic motion and aging effects that are not apparent in any of the protein
+trajectories analyzed here (although such effects have been reported in another study12).
+An alternative generalization is based on the fractional Brownian motion (FBM) model
+and is described by the equation
+∂ p(x,t )
+∂t
+= D(t )
+∂
+∂x
+(βV′(x)+ ∂
+∂x
+)p(x,t ) (7)
+where, D(t ) is a time-dependent diffusion coefficient given by,
+D(t ) =α Ktα −1 (8)
+and K is a generalized diffusion coefficient.
+Equation 8, although lacking a first-principles derivation for an arbitrary potential V(x)
+(but we note that most of the useful stochastic models of kinetics lack first principle
+derivations; at the same time those stochastic equations that can be rigorously derived
+through, e.g., the projection operator formalism usually lack practical utility) has several
+physically appealing features that make it plausible:
+12
+(i) It reduces to the standard Smoluchowski equation when α = 1.
+(ii) The probability density p(x,t ) becomes the Boltzmann distribution,
+p(x)→ peq (x) ∝ e−βV (x) , in the t→∞ limit, ensuring that the system evolves
+toward correct equilibrium statistics (see Appendix B)
+(iii) It predicts subdiffusive dynamics described by Eq. (5) at short times (see
+Appendix A)
+(iv) It can be shown to correspond to a generalized Langevin equation (GLE) with a
+power-law-type memory kernel when the potential V(x) is zero48, a linear
+function of x49, or a quadratic function of x50, 51.
+A stochastic description based on a GLE provides an alternative52, and viable approach to
+subdiffusive dynamics. The FBM description is, however, simpler in our view, both from
+an analytical and a numerical perspective: Integrating GLE with long memory is difficult,
+and analytical results for transition path times in the GLE case can only be obtained at the
+expense of approximations43.
+III. FBM MODEL PREDICTS STRETCHED EXPONENTIAL DECAY OF
+AUTOCORRELATION FUNCTIONS, IN ACCORD WITH MOLECULAR
+SIMULATION DATA
+Before applying the FBM model to transition path times, here we show that it provides a
+natural justification for the stretched-exponentials used empirically to fit the decay of
+autocorrelation functions (ACFs) of various quantities related to protein dynamics (see,
+13
+e.g., ref.53). For a dynamical variable x(t ) obeying Eq. (7), we consider the
+autocorrelation function
+Cx (t ) = x(0)x(t ) (9)
+Introducing the Green’s function G(x,t x0 ,0) , which is the solution of Eq. (7) with the
+initial condition G(x,0 x0 ,0) =δ (x − x0 ) , this autocorrelation function can be written as
+an average
+Cx (t ) = dx1 dx0x0∫∫ x1G(x1,t x0 ,0)peq (x0 ) , (10)
+where peq (x) = e−βV (x) / e−βV (x) dx
+−∞
+∞∫
+is the equilibrium distribution of x and V(x) is the
+associated potential of mean force. As shown in Appendix B, the Green’s function, and,
+therefore, the correlation function of Eq. (10), can be written as a spectral expansion, with
+each time-dependent term being a stretched exponential. Remarkably, when the
+equilibrium distribution is Gaussian (or, equivalently, when the potential of mean force
+is quadratic), only a single stretched exponential survives in this sum. A Gaussian
+approximation is a reasonable one for the probability distribution of any quantity x that
+undergoes sufficiently small fluctuations around its equilibrium value. In this case, we
+approximate this distribution as
+peq (x) ≈ 1
+2πσ 2
+exp
+(x − x )2
+2σ 2
+⎡
+⎣ ⎢⎢
+⎤
+⎦ ⎥⎥
+(11),
+14
+where σ 2 = x2 − x 2 is the variance of the distribution. The corresponding potential of
+mean force is that of a harmonic oscillator, V(x) = 1
+2
+κ (x − x )2 + constant , with a spring
+constant κ = β −1 x2 − x ( 2 )−1 . Using the results from Appendix B, we then have
+x(t )x(0) − x 2 = 1
+βκ e−βκ Ktα . (12)
+15
+16
+FIG. 4. Rescaled autocorrelation functions (
+!C
+x (t ) = x(t )x(0) − x 2
+x2 − x 2 ) where x is the endto-
+end distance of an 11-residue Gly-Ser repeat peptide9, the end-to-end distance of an
+unfolded cold-shock protein CSP, and the RMSD from the native structure in the
+unfolded state of a designed HP-35 protein variant11. Simulation data is compared with
+the theoretical predictions of Eq. (12) and with a simple exponential function that gives
+the same mean decay time as Eq. (12) (see text for further details). The autocorrelation
+function for the unfolded state of the HP-35 variant was computed from 76 continuous
+fragments of its trajectory that were at least 1μs long and corresponded to the unfolded
+state; for the purpose of this calculation the unfolded state was defined as conformations
+corresponding to the RMSDs from the native structure that are greater than 2.13Å. The
+insets show the same correlation functions on a logarithmic scale to highlight the shorttime
+behavior.
+17
+Using the values of the generalized diffusion coefficient K and the exponent α derived
+directly from the trajectories (i.e., α corresponds to the initial slopes of the plots shown
+in Fig. 2), we have estimated the autocorrelation functions using Eq. (12) and compared
+them with the correlation functions estimated directly from the trajectories for several
+model peptides and proteins (Fig. 4). Despite the crudeness of the harmonic oscillator
+approximation, Eq. (12) captures the short-time behavior nearly exactly. It is harder to
+evaluate its performance at long times, where the actual autocorrelation functions are not
+well converged; however it appears to predict the autocorrelation function to decay
+somewhat faster than the simulation data.
+Two key conclusions from Fig. 4 are that (i) the FBM model provides a physical
+justification for the use of stretched exponentials, which are often used to fit simulated
+data9, 53, and that (ii) the 1D diffusion model performs significantly worse than the FBM
+model. Specifically, the prediction of the 1D diffusion model (using the same harmonic
+oscillator approximation for the potential of mean force) is obtained from Eq. (12) by
+setting α = 1 and replacing K with the diffusion coefficient D, yielding an exponentially
+decaying ACF,
+x(t )x(0) − x 2 ≈ 1
+βκ e−βκ Dt (13)
+Given that the motion along x is not diffusive, we cannot estimate D directly from
+molecular trajectories. To compare the two models, then, we used the values of D that
+yield the same value of the reconfiguration time, which is defined as9:
+18
+τ r = !Cx (t )dt
+0
+∞∫
+,
+!C
+x (t ) = x(t )x(0) − x 2
+x2 − x 2
+(14)
+When compared to the stretched exponential ACF predicted by Eq. (12), as well as to the
+actual simulated ACFs, the exponential ACFs predicted by Eq. (13) decay too slowly at
+short times, but too fast at long times.
+IV. THE TRANSITION PATH TIME DISTRIBUTION IN A DESIGNED HP-35
+PROTEIN DISAGREES WITH A 1D DIFFUSION MODEL (FIG. 3) BUT
+AGREES WITH THE FBM MODEL (FIG. 5)
+In this Section, we focus on the distribution of transition path times for a designed HP-35
+protein, which we compute from a long molecular trajectory obtained by Piana et al.11.
+As in a previous study11, the reaction coordinate x is defined as a RMSD from the native
+structure, and the corresponding potential of mean force is shown in Fig. 3(b). The
+transition path is defined as a piece of the molecular trajectory that enters the transition
+region xA < x < xB through one of its boundaries, xA(B) , and exits through the other
+boundary, xB(A) , having continuously stayed within the transition region in between these
+events. To determine that transition path time distribution from the FBM, we rewrite it as
+a continuity equation:
+∂ p(x,t )
+∂t
+= − ∂J
+∂x
+J(x,t ) = −D(t )(βV′(x)+ ∂
+∂x
+)p(x,t )
+, (15)
+19
+Now suppose that the system has just entered the transition region from the left and is
+located at x(0) = xA +ε , where ε is small. The probability pdwell (t ) of the time the
+system will dwell in the transition region before exiting it satisfies the equation
+pdwell (t ) = − d
+dt
+dxp(x,t )
+xA
+xB
+∫ = J(xB,t )− J(xA,t ) , (16)
+where absorbing boundary conditions are imposed at x = xA, xB . The flux J(xB,t ) is
+associated with transition paths going from A to B while the flux J(xA,t ) corresponds to
+the trajectories returning to A. Eq. (16) can thus be written in the following physically
+revealing form
+pdwell (t ) = fA→A (ε )pA→A (t )+ fA→B (ε )pA→B (t ) . (17)
+Here the probability to exit through xA ( xB ) is given by
+fA→A(B)(ε ) = dt J(xA(B),t )
+0
+∞∫
+(18),
+while pA→A(B)(t ) is the distribution of times it takes the trajectory to exit via xA ( xB ). The
+function pA→B (t ) is, therefore, the distribution of transition path time when the limit
+ε →0 is taken,
+ptr (t ) = pA→B (t ) = lim
+ε→0
+J(xB,t )
+dtJ(xB,t )
+0
+∞
+∫
+(19)
+In practice, this distribution can be computed using a sufficiently small value of ε .
+Finally, time reversal symmetry necessitates that pA→B (t ) = pB→A (t ) 31, 54.
+20
+To solve Eq. (7) with the initial condition at x(0) = xA +ε (i.e., to determine Green’s
+function G(x,t xA +ε ,0) ) with the absorbing boundary conditions we have mapped this
+equation onto a quantum particle-in-a-box problem, as described in Appendix B and in
+ref.37
+Fig. 5 compares the transit time distribution computed directly from a molecular
+trajectory of a designed HP-35 protein (same data as in Fig. 3(a)) with the prediction of
+the FBM model. Unlike the 1D diffusion model where the diffusion coefficient was used
+as a fitting parameter, the red line in Fig. 5 was computed without any adjustable
+parameters. Rather, the value of the exponent (α ≈ 0.49 ) and the generalized diffusion
+coefficient ( K ≈ 0.013Å2 / ps−α ) were estimated directly from the same trajectory (i.e.,
+from the initial slope of the blue curve in Fig. 2). With these parameters, FBM somewhat
+overestimates the mean transit time as well as the position of the peak of the distribution.
+A somewhat higher value of the generalized diffusion coefficient, K ≈ 0.0185Å2 / ps−α ,
+provides nearly a perfect fit for the transit time distribution and for its mean (Fig. 5,
+blue). Notice that this value of K falls between the above value estimated from the full
+trajectory and the estimate K ≈ 0.021Å2 / ps−α obtained for the sub-ensemble containing
+only unfolded protein transformations; the value of α turns out to be essentially the same
+in both cases.
+21
+FIG. 5. Probability distribution of transition path times for a designed HP-35 protein. The
+RMSD from the native structure was used as a reaction coordinate x, and the transition
+region is defined as 1.3Å < x < 6Å (as in ref.11). The red line shows the prediction of the
+one-dimensional FBM model with the potential of mean force shown in Fig. 3(b) and
+with the parameters α ≈ 0.49 , K ≈ 0.013Å2 / ps−α estimated from the data of Fig. 2. The
+blue line corresponds to the same value of α but a somewhat higher value of the
+generalized diffusion coefficient, K ≈ 0.0185Å2 / ps−α . Rather than being estimated from
+the trajectory, the latter value of K was chosen to fit for the mean transit time. The inset
+shows the same data on a logarithmic scale to highlight the behavior of the distribution
+tails.
+V. DISCUSSION
+22
+It was recently discovered that the observed distributions of transition path times are
+inconsistent with the measured free energy barriers if the assumption of simple diffusive
+dynamics is made. Our results from Section IV show that this contradiction can be
+eliminated if the FBM model, which leads to subdiffusive dynamics, is postulated
+instead. This model, whose parameters can be extracted directly from simulated
+trajectories, describes well other features of simulated protein dynamics such as the
+temporal behavior of the fluctuations of the reaction coordinate around its equilibrium
+value.
+Can (and should) the same model be applied to experimental observations? We are aware
+of only one experimental report of transition path time distributions, a recent study by the
+Woodside group27. Similarly to the case of molecular trajectories of a designed HP-35
+protein analyzed here (and, previously, by Mori ands Saito42), the distributions of
+transition path times of several biomolecules could be fitted with the one-dimensional
+Smoluchowski model27, but only if an unusually low free energy barrier was assumed
+(which contradicts independent measurements of the same barrier). Before we consider
+our model as a remedy to this problem, we should mention the possibility that this
+discrepancy, at least in part, arises from approximations used in the analysis, or from
+experimental limitations. Specifically:
+(i) The parabolic barrier approximation used to obtain theoretical distributions
+may be inadequate as a description of the barrier shape
+23
+(ii) Moreover, the analytical formula used to obtain the transit time distributions
+was derived assuming a barrier that is much higher than the thermal energy37,
+38, an approximation that may be insufficient
+(iii) Limited time resolution of single-molecule force spectroscopy may lead to an
+underestimation of the fast events in the distribution
+(iv) Finally, artifacts arising from the attachment of the molecules to a much larger
+probe55-58 may affect the observed dynamics.
+With these caveats in mind, it is conceivable that the FBM model can reconcile the
+observed transit times with the observed free energy barriers. Indeed, within the
+Smoluchowski theory, lower barriers result in broader distributions of transit time. Thus
+lowering of the barrier may mimic the effects of subdiffusive dynamics, which also
+broadens the distribution: indeed, Mori and Saito have been able to fit the transit time
+distributions for the HP-35 protein assuming Smoluchowski dynamics in a very low
+barrier42, while we can describe the same dynamics assuming subdiffusion with a higher
+barrier.
+Although potentials of mean force can be measured experimentally using single-molecule
+force spectroscopy59, 60, the values of the generalized diffusion coefficient K and the
+exponent α are required in order to apply the FBM model to experimental distributions
+of transit time. The need for two parameters to describe the dynamics, as opposed to a
+single diffusion coefficient within the Smoluchowski model, would be a disadvantage of
+the FBM model, unless these parameters can be independently measured.
+24
+Analysis of the tail of the distribution ptr (t ) may be a way both to constrain the model’s
+parameter space and to test it more directly. Specifically, according to Eq. (B5) from
+Appendix B, the long-time tail of this function decays as a stretched exponential,
+ptr (t ) ∝tα −1e−λ1 Ktα (20),
+where λ1 is the eigenfunction of Eq. (B4) with the smallest nonzero absolute value.
+Importantly, λ1 is determined by the equilibrium potential of mean force V(x) and,
+therefore, can be computed without any assumptions about protein dynamics. In contrast
+to Eq. (20), the Smoluchowski model predicts an exponential tail37
+ptr (t ) ∝e−DV′′t /(kBT ) , (21)
+where V′′ is the barrier curvature. A stretched exponential fit of the distribution tail,
+arguably the most accessible part of the distribution, would, in principle, yield both K and
+α , assuming that such a fit provides a statistically significant improvement of other
+functional forms. We note, however, that the tail of the distribution reported by Neupane
+et al.27 seems to be well described by an exponential function. In contrast, the simulation
+data for the designed HP-35 analyzed here shows a slowly decaying tail consistent with
+the FBM model (Fig. 5).
+Single-molecule fluorescence correlation spectroscopy32, 33, 36, 61, 62 offers another possible
+way of measuring K and α . Indeed, the correlation functions of the photoemission
+intensities from the donor and acceptor dye probes employed in fluorescence resonance
+energy transfer experiments are directly related to the autocorrelation function of the
+inter-dye distance32, 36, 63; FBM theory predicts the latter to be approximated by a
+25
+stretched exponential, Eq. (12). Although those correlation functions are commonly
+analyzed by, again, fitting the signal to the predictions of the 1D Smoluchowski model, it
+is conceivable that FBM model would provide a better description of the data.
+In conclusion, while simulated protein trajectories support our model, further experiments
+and/or data analysis will be required to test the theoretical ideas developed here
+experimentally, but recent reports of remarkable agreement between atomistic
+simulations and experimental measurements of protein dynamics at relatively short
+timescales35 suggest that the FBM model may capture at least some of the essential
+features in protein dynamics.
+ACKNOWLEDGMENTS
+We are grateful to Alexander M. Berezhkovskii, Olga K. Dudko, Mauro Mugnai, and
+Benjamin Schuler for comments and discussions. We also thank D.E. Shaw research for
+providing access to their molecular dynamics trajectories, and Stefano Piana and Kresten
+Lindorff-Larsen for clarifications regarding their data analysis. This work was supported
+by the Robert A. Welch Foundation (Grant No. F-1514 to DEM) and the National
+Science Foundation (Grant No. CHE 1566001 to DEM). Computational resources were
+provided by the Texas Advanced Computing Center.
+APPENDIX A: SUBDIFFUSIVE DYNAMICS FROM FBM
+26
+The short-time behavior of the solution to Eq. (7), with the initial condition
+p(x,0) =δ (x − x0 ) , is readily obtained by replacing V′(x) with V′(x0 ) . This gives the
+Green’s function:
+p(x,t ) ≡ G(x,t x0 ,0) = 1
+4π Ktα
+exp(− (x − x0 +βV′(x0 )Ktα )2
+4Ktα ) (A1)
+The mean-square distance traveled in time t is
+Δx2 (t ) = dx dx0 (x − x0 )2G(x,t x0 ,0) peq (x0 ∫∫ )
+= 2Ktα +β 2K2 (V′(x0 ))2 t 2α
+, (A2)
+where peq (x) is the equilibrium distribution of x. Keeping only the lowest order term, we
+obtain anomalous diffusion:
+lim
+t→0
+Δx2 (t ) = 2Ktα (A3)
+APPENDIX B: SPECTRAL EXPANSION OF THE FBM GREEN’S FUNCTIONS
+We seek solution to Eq. (7) in the form of a spectral expansion
+p(x,t ) = ϕn (x)Tn (t )
+n=0
+∞Σ
+(B1)
+where the set of functions ϕn satisfies the equation
+λnϕn (x) = ∂
+∂x
+(βV′(x)+ ∂
+∂x
+)ϕn (x) (B2)
+and the expansion coefficients must satisfy the ordinary differential equation
+27
+∂Tn (t )
+∂t
+= D(t )Tn (t ) (B3),
+which readily gives
+Tn (t ) = eλnKtα
+It is easy to see that the Boltzmann function, ϕ0 = ce−βV (x) , satisfies Eq. (B2) with λ0 = 0 .
+As a result, at long times p(x,t ) converges to the Boltzmann distribution, ensuring that
+the FBM model yields correct equilibrium statistics.
+Eq. (B2) is readily mapped onto a problem of quantizing a one-dimensional quantum
+particle via the use of the ansatz ϕn (x) = e
+−β
+2
+V (x)ψ n (x) , which gives
+λne
+−β
+2
+V (x)ψ n (x) = ∂
+∂x
+βV′(x)e
+−β
+2
+V (x)ψ n (x)+ ∂2
+∂x2 e
+−β
+2
+V (x)ψ n (x)
+or:
+λnψ n (x) =ψ ′′ n (x)+ β
+2
+V′′(x)− (
+β
+2
+V′(x))2 ⎧⎨⎩
+⎫⎬⎭
+ψ n (x) (B4)
+Eq. (B4) can be interpreted as the one-dimensional Schrödinger equation describing a
+particle of mass ½ in a potential Veff (x) = −βV′′(x) / 2 + (βV′(x) / 2)2 , with energy levels
+equal to λn . It is thus amenable to standard methods of quantum mechanics.
+The Green’s function corresponding to Eq. (7) is a solution that satisfies the initial
+conditionG(x,t x0 ,0) =δ (x − x0 ) . Using the above spectral expansion, it can be easily
+seen that:
+28
+G(x,t x0 ,0) = e
+−β
+2
+V(x)−V x0 ( ( )) ψ n
+n Σ
+(x)ψ n x0 ( )eλnKtα (B5)
+The boundary conditions used to solve Eq. (B4) depend on the specific problem at hand.
+For the purpose of computing correlation functions of x (Section III), the only
+requirement is that ψ n (x) must vanish at x→±∞ . To compute the distribution of
+transition path times (Section IV), it is necessary to impose the absorbing boundary
+conditions at the boundaries of the transition region, x = xA and x = xB . In terms of the
+equivalent quantum-mechanical problem of Eq. (B4), this amounts to adding infinite
+walls to the effective potential Veff (x) at xA and xB such that the functions ψ n (x) vanish
+at these points. Numerically, Eq. (B4) is easily solved37 by diagonalizing the effective
+quantum Hamiltonian, Heff = −d2 / dx2 +Veff (x) , using the basis of particle-in-a-box
+wavefunctions confined to the box xA < x ≤ xB .
+For the purpose of computing the autocorrelation function x(0)x(t ) , a useful approach
+is based on approximating the equilibrium distribution of x as a Gaussian, or,
+equivalently, treating the potential of mean force as a harmonic well, V(x) = 1
+2
+κ x − x0 ( )2
+, where x0 is the most probable value and κ is a spring constant. The latter is set by
+requiring that the RMSD of x, x2 − x 2 , matches that of the harmonic oscillator:
+(x − x0 )2 = kBT /κ .
+29
+To simplify notation, below we set x0 = 0 ; this assumption does not entail any loss of
+generality since the coordinate x can always be redefined through a simple shift,
+x→ x − x0 . For the harmonic potential, Eq. (B4) can be re-written as:
+(
+βκ
+2
+−λn )ψ n (x) = −ψ ′′ n (x)+ β 2κ 2
+4
+x2ψ n (x) (B6)
+This corresponds to the Schrödinger equation of a harmonic oscillator,
+Enψ n (x) = − !2
+2m
+ψ ′′ n (x)+ 1
+2
+mω 2x2ψ n (x)
+where, En = βκ
+2
+−λn , ! = 1, m = 1/ 2 and ω = βκ
+This Schrödinger Equation has the following solution:
+En = !ω (n +1 2) and
+ψ n (x) = 1
+2nn!
+⋅(
+mω
+π !
+)1 4 ⋅ e
+−mω x2
+2! ⋅Hn (
+mω
+!
+x) ; n=0,1,2…
+The functions Hn are the Hermite polynomials given by:
+Hn (z) = (−1)n ez2 dn
+dzn (e−z2
+)
+We find:
+λn = −βκ n (B7)
+ψ n (x) = 1
+2nn!
+⋅(
+βκ
+2π )1 4 ⋅ e
+−βκ x2
+4 ⋅Hn (
+βκ
+2
+x) (B8)
+Finally, as in Eq. (B5) we write the Green’s function as
+G(x,t x0 ,0) = e
+−βκ
+4
+(x2−x0
+2 ) ψ n (x)ψ n (x0 )eλnKtα
+n=0
+∞Σ
+(B9)
+The displacement autocorrelation function is given by
+30
+Cx (t ) = dx1 dx0x1∫∫ x0G(x1,t x0 ,0) peq (x0 ) , (B10)
+where peq (x0 ) is the Boltzmann distribution,
+peq (x0 ) = βκ
+2π e
+−βκ
+2
+x0
+2
+Therefore,
+Cx (t ) = βκ
+2π dx1 dx0e
+−βκ
+4
+(x1
+2−x0
+2 ) ψ n (x1)ψ n (x0 )e−βκ Ktα
+n=0
+∞Σ
+e
+−βκ
+2
+x0
+2 ∫∫
+or
+Cx (t ) = βκ
+2π dx1e
+−βκ
+4
+x1
+2
+ψ n (x1)
+−∞
+∞∫
+⋅ dx0e
+−βκ
+4
+x0
+2
+ψ n (x0 )
+−∞
+∞∫
+⋅ e−βκ Ktα
+n=0
+∞Σ
+or
+Cx (t ) = βκ
+2π In
+2 ⋅ e−βκ Ktα
+n=0
+∞Σ
+(B11)
+where
+In = dx ⋅ x ⋅ e
+−βκ
+4
+x2
+⋅ψ n (x)
+−∞
+∞∫
+.
+Using Eq. (B8),
+31
+In = dx ⋅ x ⋅ e
+−βκ
+4
+x2
+⋅ 1
+2nn!
+⋅(
+βκ
+2π )1 4 ⋅ e
+−βκ x2
+4 ⋅Hn (
+βκ
+2
+x)
+−∞
+∞∫
+= dx ⋅ x ⋅ e
+−βκ
+4
+x2
+⋅ 1
+2nn!
+⋅(
+βκ
+2π )1 4 ⋅ e
+−βκ x2
+4 ⋅(−1)n ⋅ e
+βκ
+2
+x2 dn
+d(
+βκ
+2
+x)n
+(e
+−βκ
+2
+x2
+)
+−∞
+∞∫
+= (
+βκ
+2π )1 4 (−1)n
+2nn!
+dx ⋅ x
+dn
+d(
+βκ
+2
+x)n
+(e
+−βκ
+2
+x2
+)
+−∞
+∞∫
+= (
+βκ
+2π )1 4 (−1)n
+2nn!
+dx ⋅ x
+dn
+d(
+βκ
+2
+x)n
+(e
+−βκ
+2
+x2
+)
+−∞
+∞∫
+= (
+2
+βκ )(
+βκ
+2π )1 4 (−1)n
+2nn!
+dy ⋅ y
+dn
+dyn (e− y2
+)
+−∞
+∞∫
+The final integral is zero unless n=1, and we get:
+In = (
+2
+βκ )(
+βκ
+2π )1 4 π
+2
+n = 1
+0 n ≠ 1
+⎧
+⎨ ⎪
+⎩ ⎪
+(B12)
+Thus, only the n=1 term survives in the sum of Eq. (B11), resulting in
+Cx (t ) = 1
+βκ e−βκ Ktα (B13)
+32
+References
+1. N. D. Socci, J. N. Onuchic and P. G. Wolynes, J. Chem. Phys. 104, 5860-5868
+(1996).
+2. R. B. Best, E. Paci, G. Hummer and O. K. Dudko, J. Phys. Chem. B 112, 5968-
+5976 (2008).
+3. S. Kirmizialtin, L. Huang and D. E. Makarov, J. Chem. Phys. 122, 234915 (2005).
+4. O. K. Dudko, G. Hummer and A. Szabo, Proceedings of the National Academy of
+Sciences of the United States of America 105 (41), 15755-15760 (2008).
+5. R. B. Best and G. Hummer, Proceedings of the National Academy of Sciences of
+the United States of America 102 (19), 6732-6737 (2005).
+6. R. B. Best and G. Hummer, Physical review letters 96 (22), 228104 (2006).
+7. R. B. Best and G. Hummer, Physical chemistry chemical physics : PCCP 13 (38),
+16902-16911 (2011).
+8. P. Hanggi, P. Talkner and M. Borkovec, Rev. Mod. Phys. 62, 251 (1990).
+9. S. M. Avdoshenko, A. Das, R. Satija, G. A. Papoian and D. E. Makarov, Sci Rep
+7 (1), 269 (2017).
+10. S. Piana, A. G. Donchev, P. Robustelli and D. E. Shaw, The journal of physical
+chemistry. B 119 (16), 5113-5123 (2015).
+11. S. Piana, K. Lindorff-Larsen and D. E. Shaw, Proceedings of the National
+Academy of Sciences of the United States of America 109 (44), 17845-17850 (2012).
+12. X. Hu, L. Hong, M. D. Smith, T. Neusius, X. Cheng and J. C. Smith, Nature
+Physics 12, 171-174 (2016).
+33
+13. A. K. Sangha and T. Keyes, The journal of physical chemistry. B 113 (48),
+15886-15894 (2009).
+14. S. V. Krivov, PLoS Comput Biol 6 (9) (2010).
+15. M. Volk, L. Milanesi, J. P. Waltho, C. A. Hunter and G. S. Beddard, Physical
+chemistry chemical physics : PCCP 17 (2), 762-782 (2015).
+16. H. Yang, G. Luo, P. Karnchanaphanurach, T. M. Louie, I. Rech, S. Cova, L. Xun
+and X. S. Xie, Science 302 (5643), 262-266 (2003).
+17. D. E. Makarov, J. Chem. Phys. 138, 014102 (2013).
+18. A. Berezhkovskii and A. Szabo, The Journal of chemical physics 122 (1), 14503
+(2005).
+19. A. Berezhkovskii and A. Szabo, The Journal of chemical physics 135 (7), 074108
+(2011).
+20. J. Lu and E. Vanden-Eijnden, The Journal of chemical physics 141 (4), 044109
+(2014).
+21. A. M. Berezhkovskii and A. Szabo, The journal of physical chemistry. B 117
+(42), 13115-13119 (2013).
+22. B. Peters, P. G. Bolhuis, R. G. Mullen and J. E. Shea, The Journal of chemical
+physics 138 (5), 054106 (2013).
+23. D. E. Makarov, J. Chem. Phys 144, 030901 (2016).
+24. H. S. Chung, J. M. Louis and W. A. Eaton, Proceedings of the National Academy
+of Sciences of the United States of America 106 (29), 11837-11844 (2009).
+25. H. S. Chung, J. M. Louis and W. A. Eaton, Science 335, 981-984 (2012).
+34
+26. H. S. Chung, S. Piana-Agostinetti, D. E. Shaw and W. A. Eaton, Science 349
+(6255), 1504-1510 (2015).
+27. K. Neupane, D. A. Foster, D. R. Dee, H. Yu, F. Wang and M. T. Woodside,
+Science 352 (6282), 239-242 (2016).
+28. K. Neupane, D. B. Ritchie, H. Yu, D. A. Foster, F. Wang and M. T. Woodside,
+Physical review letters 109 (6), 068102 (2012).
+29. H. Yu, D. R. Dee, X. Liu, A. M. Brigley, I. Sosova and M. T. Woodside,
+Proceedings of the National Academy of Sciences of the United States of America 112
+(27), 8308-8313 (2015).
+30. H. Yu, A. N. Gupta, X. Liu, K. Neupane, A. M. Brigley, I. Sosova and M. T.
+Woodside, Proceedings of the National Academy of Sciences of the United States of
+America 109 (36), 14452-14457 (2012).
+31. D. E. Makarov, Single Molecule Science: Physical Principles and Models. (CRC
+Press, Taylor & Francis Group, Boca Raton, 2015).
+32. I. V. Gopich, D. Nettels, B. Schuler and A. Szabo, The Journal of chemical
+physics 131 (9), 095102 (2009).
+33. B. Schuler and H. Hofmann, Current opinion in structural biology 23 (1), 36-47
+(2013).
+34. A. Soranno, B. Buchli, D. Nettels, R. R. Cheng, S. Muller-Spath, S. H. Pfeil, A.
+Hoffmann, E. A. Lipman, D. E. Makarov and B. Schuler, Proceedings of the National
+Academy of Sciences of the United States of America 109, 17800-17806 (2012).
+35
+35. A. Soranno, A. Holla, F. Dingfelder, D. Nettels, D. E. Makarov and B. Schuler,
+Proceedings of the National Academy of Sciences of the United States of America, in
+press (2017).
+36. Z. Wang and D. E. Makarov, J. Phys. Chem. B 107, 5617 (2003).
+37. S. Chaudhury and D. E. Makarov, J. Chem. Phys. 133, 034118 (2010).
+38. B. W. Zhang, D. Jasnow and D. M. Zuckerman, J. Chem. Phys. 126, 074504
+(2007).
+39. H. S. Chung and I. V. Gopich, Physical chemistry chemical physics : PCCP 16
+(35), 18644-18657 (2014).
+40. G. Hummer, The Journal of chemical physics 120, 516-523 (2004).
+41. R. R. Cheng and D. E. Makarov, The Journal of chemical physics 134 (8), 085104
+(2011).
+42. T. Mori and S. Saito, The journal of physical chemistry. B 120 (45), 11683–11691
+(2016).
+43. E. Pollak, Physical chemistry chemical physics : PCCP 18 (41), 28872-28882
+(2016).
+44. D. E. Makarov, The Journal of chemical physics 146 (7), 071101 (2017).
+45. R. Zwanzig, Nonequilibrium Statistical Mechanics. (Oxford University Press,
+2001).
+46. Y. Zhang and O. K. Dudko, Annual review of biophysics 45, 117-134 (2016).
+47. R. Metzler and J. Klafter, Physics Reports 339, 1-77 (2000).
+48. E. Lutz, Physical review. E, Statistical, nonlinear, and soft matter physics 64 (5 Pt
+1), 051106 (2001).
+36
+49. S. Chaudhury and B. J. Cherayil, The journal of physical chemistry. B 112 (50),
+15973-15979 (2008).
+50. S. Okuyama and D. W. Oxtoby, The Journal of chemical physics 84, 5830-5835
+(1986).
+51. S. Okuyama and D. W. Oxtoby, The Journal of chemical physics 84, 5824-5829
+(1986).
+52. D. Panja, Journal of Statistical Mechanics: Theory and Experiment L02001
+(2010).
+53. I. Echeverria, D. E. Makarov and G. A. Papoian, Journal of the American
+Chemical Society 136 (24), 8708-8713 (2014).
+54. A. M. Berezhkovskii, G. Hummer and S. M. Bezrukov, Physical review letters 97
+(2), 020601 (2006).
+55. G. M. Nam and D. E. Makarov, Protein science : a publication of the Protein
+Society, DOI:10.1002/pro.2727 (2015).
+56. D. E. Makarov, The Journal of chemical physics 141 (24), 241103 (2014).
+57. P. Cossio, G. Hummer and A. Szabo, Proceedings of the National Academy of
+Sciences of the United States of America 112 (46), 14248-14253 (2015).
+58. K. Neupane and M. T. Woodside, Biophysical journal 111 (2), 283-286 (2016).
+59. M. T. Woodside and S. M. Block, Annual review of biophysics 43, 19-39 (2014).
+60. G. Hummer and A. Szabo, Acc Chem Res 38 (7), 504-513 (2005).
+61. D. Nettels, A. Hoffmann and B. Schuler, The journal of physical chemistry. B 112
+(19), 6137-6146 (2008).
+37
+62. B. Schuler and W. A. Eaton, Current opinion in structural biology 18 (1), 16-26
+(2008).
+63. C. L. Ting and D. E. Makarov, The Journal of chemical physics 128 (11), 115102
+(2008).

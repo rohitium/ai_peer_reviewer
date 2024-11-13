@@ -1,0 +1,18 @@
+review_task:
+  description: >
+    Conduct a thorough review for this manuscript {research_article}.
+    Make sure you critically assess any logical mistakes that subvert
+    the authors' conclusions. Use your extensive knowledge of theoretical biophysics
+    to provide an expert perspective on the problem being attempted to solve.
+  expected_output: >
+    A one paragraph summary of the manuscript. A list of 3 major concerns 
+    or comments. A list of 10 minor comments, questions or suggestions
+  agent: reviewer
+
+editing_task:
+  description: >
+    Review the manuscript {research_article} for any clerical mistakes, 
+    typos/spelling errors, grammatical errors or semantic mistakes.
+  expected_output: >
+    A list of bullet points describing the errors in detail.
+  agent: editor
