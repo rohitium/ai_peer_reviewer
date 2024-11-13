@@ -1,5 +1,5 @@
-# AI Project Reviewer
-AI Project Reviewer is an automated peer-review system developed using Crew AI. This project is designed to facilitate the review process of scientific publications by simulating two distinct roles: Reviewer and Editor. Each role performs specific tasks on an input scientific text, generating a thorough and accurate review as well as detailed editing feedback. The system is particularly aimed at enhancing the peer-review process for complex, biophysics-focused research articles.
+# AI Peer Reviewer
+AI Peer Reviewer is an automated peer-review system developed using Crew AI. This project is designed to facilitate the review process of scientific publications by simulating two distinct roles: Reviewer and Editor. Each role performs specific tasks on an input scientific text, generating a thorough and accurate review as well as detailed editing feedback. The system is particularly aimed at enhancing the peer-review process for complex, biophysics-focused research articles.
 
 ## Key files
 `config/agents.yaml`: Defines the characteristics and goals for each agent in the review process.
